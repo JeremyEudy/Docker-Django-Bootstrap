@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+    {% include 'includes/table_style.html' %}
+{% endblock style %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="container">
+            <br>
+            <h1 class="page_header">{% block page_header %}{% endblock page_header %}</h1><br>
+            {% include 'includes/breadcrumbs.html' %}
+            {% block add_button %}
+            {% endblock add_button %}
+            <hr class="my-4" style="border-color: #ffffff;">
+            <div class="btn-toolbar justify-content-between" role="toolbar" arial-label="Action panel">
+                <div class="btn-toolbar" role="toolbar" aria-label="Sub-toolbar">
+                    <div class="btn-group mr-2" role="group" aria-label="View select">
+                        <a id="list-button" href="#list" type="button" class="btn btn-secondary"><i class="fa fa-list"></i></a>
+                        <a id="grid-button" href="#grid" type="button" class="btn btn-secondary"><i class="fa fa-th-large"></i></a>
+                    </div>
+
+                    <div class="btn-group mr-2" role="group" aria-label="View all">
+                    {% if view %}
+                        <a id="view-normal" href='' type="button" class="btn btn-secondary">Return to Page View</a>
+                    </div>
+                    {% else %}
+                        <a id="view-all" href="?all=True" type="button" class="btn btn-secondary">View All Items</a>
+                    </div>
+
+                    <div class="btn-group mr-2" role="group">
+                        <a type="button" href="?count=25" class="btn btn-secondary
+                              {% if count == "25" %}
+                                active
+                              {% endif %}">25</a>
+                        <a type="button" href="?count=50" class="btn btn-secondary
+                              {% if count == "50" %}
+                                active
+                              {% endif %}">50</a>
+                        <a type="button" href="?count=100" class="btn btn-secondary
+                              {% if count == "100" %}
+                                active
+                              {% endif %}">100</a>
+                        <a type="button" href="?count=200" class="btn btn-secondary
+                              {% if count == "200" %}
+                                active
+                              {% endif %}">200</a>
+                    </div>
+                    {% endif %}
+
+                    {% if query %}
+                    <div class="btn-group mr-2" role="group" aria-label="Searches">
+                        <a type="button" class="btn btn-secondary search_filter" href=''>
+                           <i class="fas fa-times-circle"></i>&nbsp
+                           {{ query|upper }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <form id="search_form" action="" method="get">
+                    <div class="btn-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon"><i class="fa fa-search"></i></div>
+                        </div>
+                        <input id="search" type="search" name="q" class="form-control" placeholder="Search..." aria-label="Search bar" aria-describedby="btnGroupAddon">
+                        <i id="search_clear" class="fas fa-times-circle"></i>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Submit</button>
+                </form>
+            </div>
+            <br>
+
+            {% block table_content %}
+            {% endblock table_content %}
+
+        </div>
+    </div>
+
+{% if page_obj.has_other_pages %}
+    {% include 'includes/pages.html' %}
+{% endif %}
+
+{% endblock content %}
+
+{% block script %}
+    var current_view = "";
+    var count = "";
+
+    // On load functions
+    $(document).ready(function() {
+        // Prep views and searches
+        $("#search_clear").hide();
+        var default_view = "{% block default_view %}{% endblock default_view %}";
+
+        // Set the right hashtag for viewing
+        if (window.location.hash) {
+            if (window.location.hash == "#grid"){
+                $('#list-view').hide();
+                $('#grid-view').show();
+                $('#grid-button').addClass('active');
+                $('#list-button').removeClass('active');
+                current_view = "#grid";
+            } else if (window.location.hash == "#list") {
+                $('#grid-view').hide();
+                $('#list-view').show();
+                $('#list-button').addClass('active');
+                $('#grid-button').removeClass('active');
+                current_view = "#list";
+            }
+        } else {
+            if (default_view == "grid"){
+                $('#list-view').hide();
+                $('#grid-view').show();
+                $('#grid-button').addClass('active');
+                $('#list-button').removeClass('active');
+                window.location.hash = "#grid";
+                current_view = "#grid";
+            } else if (default_view == "list"){
+                $('#grid-view').hide();
+                $('#list-view').show();
+                $('#list-button').addClass('active');
+                $('#grid-button').removeClass('active');
+                window.location.hash = "#list";
+                current_view = "#list";
+            }
+        }
+        // Set search location
+        document.getElementById("search_form").action = window.location;
+        {% if view %}
+
+        // Set Return to Page View button href if in view all mode
+        var view_normal = location.toString().replace(location.search, "");
+        document.getElementById("view-normal").href = view_normal;
+        {% endif %}
+        {% if query %}
+
+        // Set clear search button href if search exists
+        var clear_query = location.toString().replace(location.search, "");
+        var search_buttons = document.getElementsByClassName("search_filter");
+        for (var i = 0; i < search_buttons.length; i++){
+            search_buttons[i].href = clear_query;
+        };
+        {% endif %}
+
+        // Sort table as well on load
+        $('th').each(function(col) {
+            if (this.innerText != ""){
+                $(this).hover(
+                    function() {
+                        $(this).addClass('focus');
+                    },
+                    function() {
+                        $(this).removeClass('focus');
+                    }
+                    );
+            };
+
+            $(this).click(function() {
+                if (this.innerText != ""){
+                    if ($(this).is('.asc')) {
+                        $(this).removeClass('asc');
+                        $(this).addClass('desc selected');
+                        sortOrder = -1;
+                    } else {
+                        $(this).addClass('asc selected');
+                        $(this).removeClass('desc');
+                        sortOrder = 1;
+                    }
+                    $(this).siblings().removeClass('asc selected');
+                    $(this).siblings().removeClass('desc selected');
+                    var arrData = $('#list-view').find('tbody >tr:has(td)').get();
+
+                    arrData.sort(function(a, b) {
+                        var val1 = $(a).children('td').eq(col).text().toUpperCase();
+                        var val2 = $(b).children('td').eq(col).text().toUpperCase();
+                        if ($.isNumeric(val1) && $.isNumeric(val2))
+                            return sortOrder == 1 ? val1 - val2 : val2 - val1;
+                        else
+                            return (val1 < val2) ? -sortOrder : (val1 > val2) ? sortOrder : 0;
+                    });
+                    $.each(arrData, function(index, row) {
+                    $('#list-view >tbody').append(row);
+                    });
+                }
+            });
+        });
+
+        
+    });
+
+    // Add clear button and functionality
+    // This function is also preceded by the table layout onload
+    // as well as the search() function to find if the search box is empty
+    $("#search_clear").click(function(){
+        $("#search").val('').focus();
+        search();
+        $(this).hide();
+    });
+
+    // swap between layouts
+    $('#list-button').click(function(event){
+        $('#grid-view').hide();
+        $('#list-view').show();
+        $('#list-button').addClass('active');
+        $('#grid-button').removeClass('active');
+        current_view = "#list";
+    });
+
+    $('#grid-button').click(function(event){
+        $('#list-view').hide();
+        $('#grid-view').show();
+        $('#grid-button').addClass('active');
+        $('#list-button').removeClass('active');
+        current_view = "#grid";
+    });
+
+    function PreserveQuery(value) {
+        if ('URLSearchParams' in window) {
+            var search_params = new URLSearchParams(window.location.search);
+            search_params.set('page', value);
+            window.location.search = search_params.toString();
+        };
+    }
+
+    {% block table_script %}
+    {% endblock table_script %}
+{% endblock script %}

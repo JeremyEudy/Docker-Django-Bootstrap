@@ -1,0 +1,36 @@
+{% load parsing_tags %}
+
+{% with request.path|split:"/" as path_list %}
+{% with path_list|last as last_page %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-dark">
+    {% for page in path_list %}
+        {% if page == "" %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}">Home</a>
+            </li>
+        {% elif page == last_page %}
+            <li class="breadcrumb-item active" aria-current="page">
+                {% if page|length < 3 %}
+                    {{ page|upper }}
+                {% else %}
+                    {{ page|title }}
+                {% endif %}
+            </li>
+        {% else %}
+            <li class="breadcrumb-item">
+                <a href="{% url page %}">
+                    {% if page|length < 3 %}
+                        {{ page|upper }}
+                    {% else %}
+                        {{ page|title }}
+                    {% endif %}
+                </a>
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ol>
+</nav>
+
+{% endwith %}
+{% endwith %}

@@ -1,0 +1,38 @@
+/* Generic CSS file for common elements */
+
+#background_video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+}
+
+/*
+footer {
+    flex-shrink: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2.5rem;
+}
+
+#footer_text {
+    color: #ffffff;
+}
+*/
+
+.jumbotron {
+    background-color: #ffffff;
+    max-width: fit-content;
+    max-width: -moz-fit-content;
+    margin: auto;
+}
+
+.card {
+    background-color: #ffffff;
+}
+
+.page_header {
+    color: #ffffff;
+}

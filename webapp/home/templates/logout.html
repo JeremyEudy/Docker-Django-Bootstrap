@@ -1,0 +1,37 @@
+{% extends 'lite.html' %}
+
+{% block title %}Logout{% endblock title %}
+
+{% block head %}
+    <meta http-equiv="refresh" content="2;url=/">
+{% endblock head %}
+
+{% block style %}
+
+.jumbotron {
+    transform: translateY(35%);
+}
+{% endblock style %}
+
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="jumbotron">
+        <center>
+            <img src={% static "images/PlexusLogo.png" %} alt="Logo">
+        </center>
+        <br>
+        <div class="row">
+            <div class="col">
+                <br>
+                <h1>You have been logged out</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ error }}
+                    {{ form.as_p }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
