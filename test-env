@@ -1,0 +1,3 @@
+VIRTUAL_HOST=<host here>
+LETSENCRYPT_HOST=<same host here>
+LETSENCRYPT_EMAIL=<email here>
