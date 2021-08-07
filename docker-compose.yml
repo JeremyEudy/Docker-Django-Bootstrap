@@ -9,50 +9,50 @@ services:
         volumes:
             - .:/opt/services/web/src
             - static_volume:/opt/services/web/static
-            - media_volume:/opt/services/web/media
+            - media_volume:/opt/services/web/src/webapp/media
         networks:
-            - nginx-proxy
-            - default_db_network
-            - test_db_network
+            - nginx_server
+            - db_network
         depends_on:
-            - default_db
-            - test_db
+            - db
+        restart: always
+
+    nginx:
+        image: nginx:1.13
+        container_name: nginx_server
+        volumes:
+            - ./config/nginx/conf.d:/etc/nginx/conf.d
+            - media_volume:/opt/services/web/media
+        depends_on:
+            - web
+        networks:
+            - nginx_server
+            - nginx-proxy
         restart: always
         expose:
             - "8004"
         env_file: .env
 
-    default_db:
+    db:
         image: postgres:10
         env_file:
-            - config/db/default_db_env
-        container_name: default_db
+            - config/db/db_env
+        container_name: db
         networks:
-            - default_db_network
+            - db_network
         volumes:
-            - default_db_volume:/var/lib/postgresql/data
-
-    test_db:
-        image: postgres:10
-        env_file:
-            - config/db/test_db_env
-        container_name: test_db
-        networks:
-            - test_db_network
-        volumes:
-            - test_db_volume:/var/lib/postgresql/data
+            - db_volume:/var/lib/postgresql/data
 
 networks:
     nginx-proxy:
         external:
             name: nginx-proxy
-    default_db_network:
+    nginx_server:
         driver: bridge
-    test_db_network:
+    db_network:
         driver: bridge
 
 volumes:
-    default_db_volume:
-    test_db_volume:
+    db_volume:
     static_volume:
     media_volume:
