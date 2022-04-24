@@ -27,7 +27,7 @@ services:
             - web
         networks:
             - nginx_server
-            - nginx-proxy
+          # - nginx-proxy
         restart: always
         expose:
             - "8004"
@@ -44,9 +44,10 @@ services:
             - db_volume:/var/lib/postgresql/data
 
 networks:
-    nginx-proxy:
-        external:
-            name: nginx-proxy
+   # Uncomment if using an nginx-proxy image
+   # nginx-proxy:
+   #   external:
+   #      name: nginx-proxy
     nginx_server:
         driver: bridge
     db_network:
