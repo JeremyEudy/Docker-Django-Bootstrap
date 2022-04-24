@@ -8,7 +8,7 @@ services:
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput --clear && gunicorn --chdir webapp --bind :80 webapp.wsgi:application"
     volumes:
       - .:/opt/services/web/src
-      - static_volume:/opt/services/web/src/webapp/static
+      - static_volume:/opt/services/web/static
       - media_volume:/opt/services/web/src/webapp/media
     networks:
       - nginx_server

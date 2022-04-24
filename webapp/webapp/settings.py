@@ -133,9 +133,6 @@ STATIC_URL = '/static/'
 # Build static root from paths located in docker-compose
 # docker-compose val: /opt/services/web/static
 STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, 'static')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
 
 MEDIA_URL = '/media/'
 # Build media root from paths located in docker-compose
