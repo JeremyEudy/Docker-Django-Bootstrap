@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
-ps -e
-read -p "Enter PID: "
-kill -HUP ${REPLY}
+gunicorn=`ps -C gunicorn -o pid= | tail -n 1`
+kill -HUP $gunicorn

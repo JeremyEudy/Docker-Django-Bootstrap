@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.8
 
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
@@ -12,6 +12,7 @@ WORKDIR /opt/services/web/src
 
 COPY . /opt/services/web/src
 
-RUN apt-get update && apt-get install -y fortune
+RUN apt-get update && apt-get upgrade -y 
+RUN apt-get install -y fortune
 
 EXPOSE 80
