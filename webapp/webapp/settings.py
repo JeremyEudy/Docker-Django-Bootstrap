@@ -39,10 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres.fields',
-    'django_extensions',
-    'django_user_agents',
-    'crispy_forms',
-    'fileshare',
     'generics',
     'home',
 ]
@@ -86,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'db',
         'USER': 'db_role',
-        'PASSWORD': 'DeDB$#2020',
+        'PASSWORD': 'DB$#2021',
         'HOST': 'db',
         'PORT': '5432',
     },
@@ -135,13 +131,13 @@ LOGOUT_REDIRECT_URL = LOGIN_URL
 
 STATIC_URL = '/static/'
 # Build static root from paths located in docker-compose
-# docker-compose val: /opt/services/web/src/static
+# docker-compose val: /opt/services/web/static
 STATIC_ROOT = os.path.join(BASE_DIR.parent.parent, 'static')
 STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 MEDIA_URL = '/media/'
 # Build media root from paths located in docker-compose
-# docker-compose val: /opt/services/web/src/media
-MEDIA_ROOT = os.path.join(BASE_DIR.parent.parent, 'media')
+# docker-compose val: /opt/services/web/src/webapp/media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

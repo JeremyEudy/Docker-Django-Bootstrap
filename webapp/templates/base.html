@@ -18,15 +18,9 @@
         <source src={% static "images/background.mp4" %} type="video/mp4">
     </video>
 
-    {% include 'includes/nav.html' %}
-
-    {% include 'includes/error.html' %}
-
     <div class="content">
     {% block content %}{% endblock content %}
     </div>
-
-    {% include 'includes/footer.html' %}
 
     <script>
         {% block script %}{% endblock script %}
